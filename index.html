@@ -466,7 +466,16 @@
         }
 
         // --- Math Rendering ---
-
+        function renderLatex(element) {
+            if (window.renderMathInElement) {
+                window.renderMathInElement(element, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ]
+                });
+            }
+        }
         document.addEventListener('DOMContentLoaded', () => {
             changeTab('cuet');
         });
