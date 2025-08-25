@@ -298,7 +298,9 @@
             
             let optionsHtml = questionData.options.map((option, index) => {
                 const optionLetter = String.fromCharCode(65 + index);
-                return `<div class="mt-2"><button class="w-full text-left bg-gray-100 p-3 rounded-lg hover:bg-indigo-100 transition-colors" onclick="checkAnswer('${optionLetter}')">${optionLetter}. ${option}</button></div>`;
+                // This new line removes any "A. ", "B. ", etc., from the start of the option text.
+                const cleanOption = option.replace(/^[A-Z]\.\s*/, ''); 
+                return `<div class="mt-2"><button class="w-full text-left bg-gray-100 p-3 rounded-lg hover:bg-indigo-100 transition-colors" onclick="checkAnswer('${optionLetter}')">${optionLetter}. ${cleanOption}</button></div>`;
             }).join('');
 
             questionContainer.innerHTML = `
