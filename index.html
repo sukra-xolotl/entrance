@@ -190,11 +190,9 @@
             fetchQuestions("All Topics", 75, true);
         }
         
-        // --- SECURE API Call Helper via Netlify Function ---
-        // This function calls our own serverless function, which then calls the Google API.
-        // The API key is never exposed to the browser.
+            // API KEY CALLING 
         async function callGeminiAPI(prompt) {
-            // The endpoint for our Netlify function.
+            
             const functionUrl = '/.netlify/functions/call-gemini';
 
             try {
