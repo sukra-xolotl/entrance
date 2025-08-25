@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M.A. Economics Entrance Exam Prep</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- KaTeX for LaTeX rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" xintegrity="sha384-n8MVd4RsNIU0KOVEMckDpbDM7voUVD3yTMgLTrCKwVfP8UJzXfITzBOe7FaiDE6u" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" xintegrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-active {
+            border-bottom: 2px solid #4f46e5;
+            color: #4f46e5;
+        }
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        #timer {
+            font-size: 1.5rem;
+        }
+        .explanation {
+            background-color: #f3f4f6;
+            border-left: 4px solid #4f46e5;
+            padding: 1rem;
+            margin-top: 0.75rem;
+            border-radius: 0.25rem;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">M.A. Economics Entrance Exam Practice</h1>
+            <p class="text-gray-600 mt-2">Your one-stop platform for cracking top economics entrance exams.</p>
+        </header>
+
+        <!-- Tabs -->
+        <div class="mb-8">
+            <div class="flex border-b border-gray-300 justify-center">
+                <button class="py-2 px-4 text-lg font-medium text-gray-500 hover:text-indigo-600 focus:outline-none tab-active" onclick="changeTab('cuet')">CUET-PG (Economics)</button>
+                <button class="py-2 px-4 text-lg font-medium text-gray-500 hover:text-indigo-600 focus:outline-none" onclick="changeTab('iit')">IIT-JAM (Economics)</button>
+                <button class="py-2 px-4 text-lg font-medium text-gray-500 hover:text-indigo-600 focus:outline-none" onclick="changeTab('isi')">ISI-MSQE</button>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div id="cuet-content">
+            <div id="dashboard">
+                <h2 class="text-2xl font-semibold mb-6 text-center">CUET-PG (Economics) Dashboard</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Topic Cards -->
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer" onclick="showQuestionModal('Micro Economics')"><h3 class="font-semibold text-xl">Micro Economics</h3></div>
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer" onclick="showQuestionModal('Macro Economics')"><h3 class="font-semibold text-xl">Macro Economics</h3></div>
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer" onclick="showQuestionModal('Money and Inflation')"><h3 class="font-semibold text-xl">Money and Inflation</h3></div>
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer" onclick="showQuestionModal('Consumption and Investment Function')"><h3 class="font-semibold text-xl">Consumption & Investment</h3></div>
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer" onclick="showQuestionModal('Statistical Methods in Economics')"><h3 class="font-semibold text-xl">Statistical Methods</h3></div>
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer" onclick="showQuestionModal('Mathematical Methods in Economics')"><h3 class="font-semibold text-xl">Mathematical Methods</h3></div>
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer" onclick="showQuestionModal('Indian Economy')"><h3 class="font-semibold text-xl">Indian Economy</h3></div>
+                    <div class="card bg-indigo-600 text-white p-6 rounded-lg shadow-md text-center cursor-pointer col-span-1 md:col-span-2 lg:col-span-4" onclick="startMockTest()"><h3 class="font-semibold text-2xl">MOCK TEST</h3></div>
+                </div>
+            </div>
+
+            <!-- Quiz Interface -->
+            <div id="quiz-interface" class="hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 id="quiz-topic" class="text-2xl font-semibold"></h2>
+                    <div>
+                        <button id="quit-btn" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 mr-4" onclick="quitQuiz()">Quit</button>
+                        <span id="timer-container" class="hidden"><span id="timer" class="text-2xl font-bold text-indigo-600">90:00</span></span>
+                    </div>
+                </div>
+                <div id="question-container" class="bg-white p-8 rounded-lg shadow-lg"></div>
+                <div id="results-container" class="hidden bg-white p-8 rounded-lg shadow-lg"></div>
+            </div>
+        </div>
+
+        <div id="iit-content" class="hidden text-center"><h2 class="text-2xl font-semibold">IIT-JAM (Economics)</h2><p class="mt-4 text-gray-600">Content for this section is coming soon!</p></div>
+        <div id="isi-content" class="hidden text-center"><h2 class="text-2xl font-semibold">ISI-MSQE</h2><p class="mt-4 text-gray-600">Content for this section is coming soon!</p></div>
+    </div>
+
+    <!-- Question Count Modal -->
+    <div id="questionModal" class="modal-overlay hidden">
+        <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-sm">
+            <h3 class="text-xl font-semibold mb-4 text-center">Number of Questions</h3>
+            <p class="text-gray-600 mb-4 text-center">Choose how many questions you want (1-100).</p>
+            <input type="number" id="numQuestionsInput" class="w-full p-2 border border-gray-300 rounded-lg" value="25" min="1" max="100">
+            <p id="modal-error" class="text-red-500 text-sm mt-2 text-center hidden">Please enter a number between 1 and 100.</p>
+            <div class="mt-6 flex justify-end">
+                <button class="bg-gray-300 text-gray-800 py-2 px-4 rounded-lg mr-2 hover:bg-gray-400" onclick="closeQuestionModal()">Cancel</button>
+                <button class="bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700" onclick="startQuizFromModal()">Start Quiz</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- Global State ---
+        let currentQuestions = [];
+        let quizResults = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timerInterval;
+        let currentTopic = '';
+
+        // --- Tab Navigation ---
+        function changeTab(tabName) {
+            document.querySelectorAll('.flex.border-b button').forEach(tab => tab.classList.remove('tab-active'));
+            ['cuet-content', 'iit-content', 'isi-content'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            
+            const activeTab = document.querySelector(`button[onclick="changeTab('${tabName}')"]`);
+            if(activeTab) activeTab.classList.add('tab-active');
+            
+            const activeContent = document.getElementById(`${tabName}-content`);
+            if(activeContent) activeContent.classList.remove('hidden');
+        }
+
+        // --- Modal Logic ---
+        function showQuestionModal(topic) {
+            currentTopic = topic;
+            document.getElementById('questionModal').classList.remove('hidden');
+            document.getElementById('numQuestionsInput').focus();
+            document.getElementById('modal-error').classList.add('hidden');
+        }
+
+        function closeQuestionModal() {
+            document.getElementById('questionModal').classList.add('hidden');
+        }
+
+        function startQuizFromModal() {
+            const numQuestions = parseInt(document.getElementById('numQuestionsInput').value);
+            const errorEl = document.getElementById('modal-error');
+            if (numQuestions >= 1 && numQuestions <= 100) {
+                errorEl.classList.add('hidden');
+                closeQuestionModal();
+                startQuiz(currentTopic, numQuestions);
+            } else {
+                errorEl.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        function startQuiz(topic, numQuestions = 25) {
+            document.getElementById('dashboard').classList.add('hidden');
+            const quizInterface = document.getElementById('quiz-interface');
+            quizInterface.classList.remove('hidden');
+            const resultsContainer = document.getElementById('results-container');
+            resultsContainer.classList.add('hidden');
+            resultsContainer.innerHTML = '';
+            document.getElementById('question-container').classList.remove('hidden');
+            document.getElementById('quiz-topic').innerText = topic;
+            document.getElementById('timer-container').classList.add('hidden');
+            document.getElementById('quit-btn').classList.remove('hidden');
+            fetchQuestions(topic, numQuestions);
+        }
+
+        function startMockTest() {
+            document.getElementById('dashboard').classList.add('hidden');
+            const quizInterface = document.getElementById('quiz-interface');
+            quizInterface.classList.remove('hidden');
+            const resultsContainer = document.getElementById('results-container');
+            resultsContainer.classList.add('hidden');
+            resultsContainer.innerHTML = '';
+            document.getElementById('question-container').classList.remove('hidden');
+            document.getElementById('quiz-topic').innerText = "Mock Test";
+            document.getElementById('timer-container').classList.remove('hidden');
+            document.getElementById('quit-btn').classList.remove('hidden');
+            fetchQuestions("All Topics", 75, true);
+        }
+        
+        // --- SECURE API Call Helper via Netlify Function ---
+        // This function calls our own serverless function, which then calls the Google API.
+        // The API key is never exposed to the browser.
+        async function callGeminiAPI(prompt) {
+            // The endpoint for our Netlify function.
+            const functionUrl = '/.netlify/functions/call-gemini';
+
+            try {
+                const response = await fetch(functionUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    // Send the prompt in the request body.
+                    body: JSON.stringify({ prompt: prompt })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    const error = new Error(`Server function failed with status ${response.status}: ${errorData.error}`);
+                    error.status = response.status;
+                    throw error;
+                }
+
+                const data = await response.json();
+                if (!data.candidates || !data.candidates[0].content.parts[0]) {
+                    throw new Error("Invalid API response structure from server function");
+                }
+                return data.candidates[0].content.parts[0].text;
+
+            } catch (error) {
+                console.error("Netlify function call failed:", error);
+                const questionContainer = document.getElementById('question-container');
+                let errorMessage = `<p class="text-red-500 text-center font-semibold">An error occurred while contacting the AI model.</p>`;
+                
+                if (error.status === 500) {
+                     errorMessage += `<p class="text-gray-600 text-center mt-2">There might be a problem with the server configuration. Make sure the API key is set correctly in your Netlify environment variables.</p>`;
+                } else {
+                    errorMessage += `<p class="text-gray-600 text-center mt-2">Please check the console for more details.</p>`;
+                }
+
+                questionContainer.innerHTML = `<div class="p-4">${errorMessage}</div><div class="text-center mt-4"><button class="bg-indigo-600 text-white py-2 px-6 rounded-lg hover:bg-indigo-700" onclick="backToDashboard()">Back to Dashboard</button></div>`;
+                throw error; // Still throw error for console logging
+            }
+        }
+
+
+        async function fetchQuestions(topic, numQuestions, isMock = false) {
+            const questionContainer = document.getElementById('question-container');
+            questionContainer.innerHTML = `<div class="text-center"><p class="text-lg">✨ Generating ${numQuestions} questions for ${topic}... Please wait.</p><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mt-4"></div></div>`;
+            
+            const prompt = `Generate ${numQuestions} multiple-choice questions for the CUET-PG Economics entrance exam. Topic: "${topic}". The questions should be based on the official CUET-PG Economics syllabus and the B.A. Economics syllabus of Delhi University. If "All Topics", cover all syllabus sections. 30-50% should be inspired by PYQs. For any mathematical expressions, formulas, or variables, YOU MUST use LaTeX notation (e.g., $...$ for inline and $$...$$ for block equations). For each question, provide: question text, four options, the correct answer letter, and the specific sub-topic. Return as a raw JSON array of objects with keys: "question", "options" (array), "answer" (string), "sub_topic" (string).`;
+
+            try {
+                let apiResponseText = await callGeminiAPI(prompt);
+
+                // --- Robust JSON Extraction ---
+                const startIndex = apiResponseText.indexOf('[');
+                const endIndex = apiResponseText.lastIndexOf(']');
+
+                if (startIndex === -1 || endIndex === -1) {
+                    throw new Error("Could not find a valid JSON array in the API response.");
+                }
+
+                const jsonText = apiResponseText.substring(startIndex, endIndex + 1);
+                
+                // The API might return JSON with unescaped backslashes in LaTeX expressions (e.g., "\frac").
+                // This is invalid JSON. We need to escape these backslashes before parsing.
+                const sanitizedJsonText = jsonText.replace(/\\/g, '\\\\');
+
+                currentQuestions = JSON.parse(sanitizedJsonText);
+                
+                currentQuestionIndex = 0;
+                score = 0;
+                quizResults = [];
+                
+                if (isMock) {
+                    questionContainer.innerHTML = `<div class="text-center"><h2 class="text-2xl font-bold mb-4">Questions are ready!</h2><p class="mb-6">You have 90 minutes to complete 75 questions.</p><button class="bg-indigo-600 text-white py-3 px-8 rounded-lg text-lg hover:bg-indigo-700" onclick="beginMockTest()">Start Test</button></div>`;
+                } else {
+                    displayQuestion();
+                }
+
+            } catch (error) {
+                console.error("Error fetching questions:", error);
+                if (document.getElementById('question-container').innerHTML.includes('Generating')) {
+                    let errorMessage = `<p class="text-red-500 text-center font-semibold">Failed to load questions.</p>`;
+                     if (error instanceof SyntaxError) {
+                        errorMessage += `<p class="text-gray-600 text-center mt-2">There was an issue parsing the quiz data from the server. The format was invalid. Please try again.</p>`;
+                    } else {
+                        errorMessage += `<p class="text-gray-600 text-center mt-2">${error.message}</p>`;
+                    }
+                    questionContainer.innerHTML = `<div class="p-4">${errorMessage}</div><div class="text-center mt-4"><button class="bg-indigo-600 text-white py-2 px-6 rounded-lg hover:bg-indigo-700" onclick="backToDashboard()">Back to Dashboard</button></div>`;
+                }
+            }
+        }
+        
+        function beginMockTest() {
+            startTimer(90 * 60);
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            if (currentQuestionIndex >= currentQuestions.length) {
+                showResults();
+                return;
+            }
+
+            const questionData = currentQuestions[currentQuestionIndex];
+            const questionContainer = document.getElementById('question-container');
+            
+            let optionsHtml = questionData.options.map((option, index) => {
+                const optionLetter = String.fromCharCode(65 + index);
+                return `<div class="mt-2"><button class="w-full text-left bg-gray-100 p-3 rounded-lg hover:bg-indigo-100 transition-colors" onclick="checkAnswer('${optionLetter}')">${optionLetter}. ${option}</button></div>`;
+            }).join('');
+
+            questionContainer.innerHTML = `
+                <p class="text-gray-500 text-sm mb-2">Sub-topic: ${questionData.sub_topic}</p>
+                <p class="text-lg font-medium mb-4">${currentQuestionIndex + 1}. ${questionData.question}</p>
+                <div id="options-container">${optionsHtml}</div>
+                <div class="mt-6 text-right"><p>Question ${currentQuestionIndex + 1} of ${currentQuestions.length}</p></div>`;
+            
+            renderLatex(questionContainer);
+        }
+        
+        function checkAnswer(selectedOption) {
+            const questionData = currentQuestions[currentQuestionIndex];
+            const correctAnswer = questionData.answer;
+            const isCorrect = selectedOption === correctAnswer;
+            if (isCorrect) score++;
+
+            quizResults.push({ questionData, selectedOption, isCorrect });
+
+            const buttons = document.querySelectorAll('#options-container button');
+            buttons.forEach(btn => {
+                 btn.disabled = true;
+                 const optionLetter = btn.textContent.charAt(0);
+                 if (optionLetter === correctAnswer) {
+                     btn.classList.remove('bg-gray-100', 'hover:bg-indigo-100');
+                     btn.classList.add('bg-green-200', 'text-green-800');
+                 } else if (optionLetter === selectedOption) {
+                     btn.classList.remove('bg-gray-100', 'hover:bg-indigo-100');
+                     btn.classList.add('bg-red-200', 'text-red-800');
+                 }
+            });
+            
+            setTimeout(() => {
+                currentQuestionIndex++;
+                displayQuestion();
+            }, 1200);
+        }
+
+        function quitQuiz() {
+            showResults();
+        }
+
+        function showResults() {
+            clearInterval(timerInterval);
+            document.getElementById('question-container').classList.add('hidden');
+            document.getElementById('quit-btn').classList.add('hidden');
+            const resultsContainer = document.getElementById('results-container');
+            resultsContainer.classList.remove('hidden');
+
+            const attemptedQuestions = quizResults.length;
+
+            let detailedReviewHtml = quizResults.map((result, index) => {
+                const userAns = result.selectedOption;
+                const correctAns = result.questionData.answer;
+                const optionsText = result.questionData.options[userAns.charCodeAt(0) - 65];
+                const correctOptionsText = result.questionData.options[correctAns.charCodeAt(0) - 65];
+
+                let answerFeedbackHtml = `<p class="text-red-600">Your answer: ${userAns}. ${optionsText}</p>`;
+                if (result.isCorrect) {
+                    answerFeedbackHtml = '';
+                }
+
+                return `
+                    <div class="border-t py-4">
+                        <p class="font-semibold">${index + 1}. ${result.questionData.question}</p>
+                        <p class="text-green-600 mt-2">Correct answer: ${correctAns}. ${correctOptionsText}</p>
+                        ${answerFeedbackHtml}
+                        <div class="mt-2">
+                            <button class="text-sm bg-indigo-100 text-indigo-700 py-1 px-3 rounded-full hover:bg-indigo-200" onclick="getConceptExplanation('${result.questionData.question}', ${index})">✨ Explain Concept</button>
+                            <button class="text-sm bg-purple-100 text-purple-700 py-1 px-3 rounded-full hover:bg-purple-200 ml-2" onclick="getDeeperUnderstanding('${result.questionData.question}', ${index})">🧠 Deeper Understanding</button>
+                        </div>
+                        <div id="explanation-${index}" class="explanation hidden"></div>
+                    </div>
+                `;
+            }).join('');
+
+            resultsContainer.innerHTML = `
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold mb-2">Quiz Completed!</h2>
+                    <p class="text-2xl mb-4">You scored ${score} out of ${attemptedQuestions} attempted questions.</p>
+                    <button class="bg-indigo-600 text-white py-2 px-6 rounded-lg hover:bg-indigo-700" onclick="getPerformanceAnalysis()">✨ Get Performance Analysis</button>
+                    <button class="bg-gray-200 text-gray-800 py-2 px-6 rounded-lg hover:bg-gray-300 ml-2" onclick="backToDashboard()">Back to Dashboard</button>
+                </div>
+                <div id="performance-analysis-content" class="my-6"></div>
+                <h3 class="text-2xl font-bold mt-8 mb-4">Detailed Review</h3>
+                <div id="detailed-review-content">${detailedReviewHtml}</div>
+            `;
+            renderLatex(resultsContainer);
+        }
+
+        async function getConceptExplanation(question, index) {
+            const explanationDiv = document.getElementById(`explanation-${index}`);
+            explanationDiv.classList.remove('hidden');
+            explanationDiv.innerHTML = `<p>✨ Fetching explanation...</p>`;
+            
+            const prompt = `For the question "${question}", explain the core economic concept being tested in simple, clear terms (max 100 words). Use LaTeX for any mathematical notation.`;
+            
+            try {
+                const explanationText = await callGeminiAPI(prompt);
+                explanationDiv.innerHTML = explanationText;
+                renderLatex(explanationDiv);
+            } catch (error) {
+                explanationDiv.innerText = 'Sorry, I could not fetch an explanation at this time.';
+                console.error("Explanation Error:", error);
+            }
+        }
+        
+        async function getDeeperUnderstanding(question, index) {
+            const explanationDiv = document.getElementById(`explanation-${index}`);
+            explanationDiv.classList.remove('hidden');
+            explanationDiv.innerHTML = `<p>🧠 Diving deeper...</p>`;
+            
+            const prompt = `For the question "${question}", provide a more detailed explanation (around 200 words). Discuss the context, any relevant formulas, and how this concept connects to other related topics in economics. Use LaTeX for any mathematical notation.`;
+            
+            try {
+                const explanationText = await callGeminiAPI(prompt);
+                explanationDiv.innerHTML = explanationText;
+                renderLatex(explanationDiv);
+            } catch (error) {
+                explanationDiv.innerText = 'Sorry, I could not fetch a deeper explanation at this time.';
+                console.error("Deeper Understanding Error:", error);
+            }
+        }
+
+        async function getPerformanceAnalysis() {
+            const analysisDiv = document.getElementById('performance-analysis-content');
+            analysisDiv.innerHTML = `<div class="text-center"><p>✨ Analyzing your performance...</p><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mt-2"></div></div>`;
+
+            const correctTopics = quizResults.filter(r => r.isCorrect).map(r => r.questionData.sub_topic);
+            const incorrectTopics = quizResults.filter(r => !r.isCorrect).map(r => r.questionData.sub_topic);
+
+            const prompt = `A student took an economics quiz.
+            Correctly answered topics: ${correctTopics.join(', ') || 'None'}.
+            Incorrectly answered topics: ${incorrectTopics.join(', ') || 'None'}.
+            Provide a brief, encouraging performance analysis. Identify their top 2-3 weak areas from the incorrect list. For each weak area, suggest a specific, actionable study tip or a key concept to review. Format the output using simple HTML for paragraphs and lists.`;
+
+            try {
+                const analysisHtml = await callGeminiAPI(prompt);
+                analysisDiv.innerHTML = `<div class="explanation">${analysisHtml}</div>`;
+            } catch (error) {
+                analysisDiv.innerHTML = `<p class="text-red-500">Sorry, I could not generate a performance analysis at this time.</p>`;
+                console.error("Analysis Error:", error);
+            }
+        }
+
+        function backToDashboard() {
+            document.getElementById('quiz-interface').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            clearInterval(timerInterval);
+        }
+
+        // --- Timer Logic ---
+        function startTimer(duration) {
+            let timer = duration;
+            const timerDisplay = document.getElementById('timer');
+            timerInterval = setInterval(() => {
+                let minutes = parseInt(timer / 60, 10).toString().padStart(2, '0');
+                let seconds = parseInt(timer % 60, 10).toString().padStart(2, '0');
+                timerDisplay.textContent = `${minutes}:${seconds}`;
+                if (--timer < 0) {
+                    clearInterval(timerInterval);
+                    showResults();
+                }
+            }, 1000);
+        }
+
+        // --- Math Rendering ---
+        function renderLatex(element) {
+            if (window.renderMathInElement) {
+                window.renderMathInElement(element, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ]
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            changeTab('cuet');
+        });
+
+    </script>
+</body>
+</html>
