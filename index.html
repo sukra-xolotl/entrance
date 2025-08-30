@@ -163,6 +163,9 @@
 
         // --- Quiz Logic ---
         function startQuiz(topic, numQuestions = 25) {
+            const urlTopic = topic.toLowerCase().replace(/ /g, '-');
+            history.pushState({ topic: topic }, '', '/' + urlTopic);
+            
             document.getElementById('dashboard').classList.add('hidden');
             const quizInterface = document.getElementById('quiz-interface');
             quizInterface.classList.remove('hidden');
@@ -447,6 +450,7 @@
         }
 
         function backToDashboard() {
+            history.pushState(null, '', '/');
             document.getElementById('quiz-interface').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
             clearInterval(timerInterval);
@@ -478,8 +482,38 @@
                 });
             }
         }
+        
+        // --- SPA Routing Logic ---
+        function handleInitialLoad() {
+            const path = window.location.pathname.substring(1); // Remove leading '/'
+            if (path) {
+                const topic = path.replace(/-/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                // Show quiz interface and set topic from URL
+                document.getElementById('dashboard').classList.add('hidden');
+                document.getElementById('quiz-interface').classList.remove('hidden');
+                document.getElementById('quiz-topic').innerText = topic;
+                // Note: Questions are not automatically re-fetched. This is intended behavior for a simple SPA.
+            }
+        }
+
+        window.addEventListener('popstate', (event) => {
+            if (window.location.pathname === '/') {
+                // If the path is root, show dashboard
+                document.getElementById('quiz-interface').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+            } else {
+                // If there's a path, show quiz (this handles browser back/forward)
+                const path = window.location.pathname.substring(1);
+                const topic = path.replace(/-/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                document.getElementById('dashboard').classList.add('hidden');
+                document.getElementById('quiz-interface').classList.remove('hidden');
+                document.getElementById('quiz-topic').innerText = topic;
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
             changeTab('cuet');
+            handleInitialLoad();
         });
 
     </script>
