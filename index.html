@@ -238,51 +238,67 @@
 
         async function fetchQuestions(topic, numQuestions, isMock = false) {
             const questionContainer = document.getElementById('question-container');
-            questionContainer.innerHTML = `<div class="text-center"><p class="text-lg">✨ Generating ${numQuestions} questions for ${topic}... Please wait.</p><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mt-4"></div></div>`;
-            
-            const prompt = `Generate ${numQuestions} multiple-choice questions for the CUET-PG Economics entrance exam. Topic: "${topic}". The questions should be based on the official CUET-PG Economics syllabus and the B.A. Economics syllabus of Delhi University. If "All Topics", cover all syllabus sections. 30-50% should be inspired by PYQs. For any mathematical expressions, formulas, or variables, YOU MUST use LaTeX notation (e.g., $...$ for inline and $$...$$ for block equations). For each question, provide: question text, four options, the correct answer letter, and the specific sub-topic. Return as a raw JSON array of objects with keys: "question", "options" (array), "answer" (string), "sub_topic" (string).`;
+            questionContainer.innerHTML = `<div class="text-center"><p class="text-lg">✨ Generating questions for ${topic}... This may take a moment.</p><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mt-4"></div><p id="progress-indicator" class="mt-4 text-sm text-gray-500">Generating 0 of ${numQuestions} questions...</p></div>`;
 
-            try {
-                let apiResponseText = await callGeminiAPI(prompt);
+            let allQuestions = [];
+            const batchSize = 25; // Define the number of questions per request
+            let questionsGenerated = 0;
 
-                // 1. Isolate the JSON string from the response.
-                const startIndex = apiResponseText.indexOf('[');
-                const endIndex = apiResponseText.lastIndexOf(']');
-                if (startIndex === -1 || endIndex === -1) {
-                    throw new Error("Could not find a valid JSON array in the API response.");
-                }
-                const jsonText = apiResponseText.substring(startIndex, endIndex + 1);
+            const totalBatches = Math.ceil(numQuestions / batchSize);
 
-                // 2. Clean up common JSON syntax errors.
-                const sanitizedJsonText = jsonText
-                    .replace(/\\/g, '\\\\')          // Escape backslashes for LaTeX
-                    .replace(/\/\/.*$/gm, '')        // Remove JS-style comments
-                    .replace(/,\s*}/g, '}')          // Remove trailing commas in objects
-                    .replace(/,\s*]/g, ']');         // Remove trailing commas in arrays
+            for (let i = 0; i < totalBatches; i++) {
+                const questionsToGenerate = Math.min(batchSize, numQuestions - questionsGenerated);
+                if (questionsToGenerate <= 0) break;
 
-                currentQuestions = JSON.parse(sanitizedJsonText);
-                
-                currentQuestionIndex = 0;
-                score = 0;
-                quizResults = [];
-                
-                if (isMock) {
-                    questionContainer.innerHTML = `<div class="text-center"><h2 class="text-2xl font-bold mb-4">Questions are ready!</h2><p class="mb-6">You have 90 minutes to complete 75 questions.</p><button class="bg-indigo-600 text-white py-3 px-8 rounded-lg text-lg hover:bg-indigo-700" onclick="beginMockTest()">Start Test</button></div>`;
-                } else {
-                    displayQuestion();
-                }
+                const prompt = `Generate ${questionsToGenerate} multiple-choice questions for the CUET-PG Economics entrance exam. Topic: "${topic}". The questions should be based on the official CUET-PG Economics syllabus and the B.A. Economics syllabus of Delhi University. If "All Topics", cover all syllabus sections. 30-50% should be inspired by PYQs. For any mathematical expressions, formulas, or variables, YOU MUST use LaTeX notation (e.g., $...$ for inline and $$...$$ for block equations). For each question, provide: question text, four options, the correct answer letter, and the specific sub-topic. Return as a raw JSON array of objects with keys: "question", "options" (array), "answer" (string), "sub_topic" (string).`;
 
-            } catch (error) {
-                console.error("Error fetching questions:", error);
-                if (document.getElementById('question-container').innerHTML.includes('Generating')) {
-                    let errorMessage = `<p class="text-red-500 text-center font-semibold">Failed to load questions.</p>`;
-                     if (error instanceof SyntaxError) {
-                        errorMessage += `<p class="text-gray-600 text-center mt-2">There was an issue parsing the quiz data from the server. The format was invalid. Please try again.</p>`;
-                    } else {
-                        errorMessage += `<p class="text-gray-600 text-center mt-2">${error.message}</p>`;
+                try {
+                    const apiResponseText = await callGeminiAPI(prompt);
+                    const startIndex = apiResponseText.indexOf('[');
+                    const endIndex = apiResponseText.lastIndexOf(']');
+
+                    if (startIndex === -1 || endIndex === -1) {
+                        console.error("No JSON array found in API response for batch.", apiResponseText);
+                        continue; // Skip this batch but continue with the next
                     }
-                    questionContainer.innerHTML = `<div class="p-4">${errorMessage}</div><div class="text-center mt-4"><button class="bg-indigo-600 text-white py-2 px-6 rounded-lg hover:bg-indigo-700" onclick="backToDashboard()">Back to Dashboard</button></div>`;
+                    const jsonText = apiResponseText.substring(startIndex, endIndex + 1);
+
+                    const sanitizedJsonText = jsonText
+                        .replace(/\\/g, '\\\\')
+                        .replace(/\/\/.*$/gm, '')
+                        .replace(/,\s*}/g, '}')
+                        .replace(/,\s*]/g, ']');
+
+                    const newQuestions = JSON.parse(sanitizedJsonText);
+                    allQuestions = allQuestions.concat(newQuestions);
+                    questionsGenerated += newQuestions.length;
+
+                    document.getElementById('progress-indicator').innerText = `Generating ${questionsGenerated} of ${numQuestions} questions...`;
+
+                } catch (error) {
+                    console.error("Error fetching a batch of questions:", error);
+                    // Optionally, break the loop if a critical error occurs
+                    break;
                 }
+            }
+
+            currentQuestions = allQuestions;
+
+            if (currentQuestions.length === 0) {
+                let errorMessage = `<p class="text-red-500 text-center font-semibold">Failed to load any questions.</p>`;
+                errorMessage += `<p class="text-gray-600 text-center mt-2">Please try again with a smaller number of questions.</p>`;
+                questionContainer.innerHTML = `<div class="p-4">${errorMessage}</div><div class="text-center mt-4"><button class="bg-indigo-600 text-white py-2 px-6 rounded-lg hover:bg-indigo-700" onclick="backToDashboard()">Back to Dashboard</button></div>`;
+                return;
+            }
+
+            currentQuestionIndex = 0;
+            score = 0;
+            quizResults = [];
+
+            if (isMock) {
+                questionContainer.innerHTML = `<div class="text-center"><h2 class="text-2xl font-bold mb-4">Questions are ready!</h2><p class="mb-6">You have 90 minutes to complete ${currentQuestions.length} questions.</p><button class="bg-indigo-600 text-white py-3 px-8 rounded-lg text-lg hover:bg-indigo-700" onclick="beginMockTest()">Start Test</button></div>`;
+            } else {
+                displayQuestion();
             }
         }
         
