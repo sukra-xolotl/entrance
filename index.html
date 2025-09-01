@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>M.A. Economics Entrance Exam Prep</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+Pro:wght@400;700&family=Spline+Sans:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- KaTeX for LaTeX rendering -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" xintegrity="sha384-n8MVd4RsNIU0KOVEMckDpbDM7voUVD3yTMgLTrCKwVfP8UJzXfITzBOe7FaiDE6u" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
@@ -13,24 +13,13 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #42BC79;
-        }
-        .text-source-serif {
-            font-family: 'Source Serif Pro', serif;
-        }
-        .text-spline-sans {
-            font-family: 'Spline Sans', sans-serif;
         }
         .tab-active {
-            background-color: #D9D9D9;
-        }
-        .tab-inactive {
-            color: #D9D9D9;
-            border: 3px solid #D9D9D9;
+            border-bottom: 2px solid #4f46e5;
+            color: #4f46e5;
         }
         .card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            background-color: #D9D9D9;
         }
         .card:hover {
             transform: translateY(-5px);
@@ -58,66 +47,39 @@
             justify-content: center;
             z-index: 50;
         }
-        .mock-test-button {
-            background-color: #3720B8;
-            box-shadow: 3px 7px 8px 8px rgba(255, 253.54, 253.54, 0.25);
-            color: white;
-            padding: 3rem;
-            border-radius: 9999px;
-            font-size: 2.25rem; /* 36px */
-            line-height: 2.5rem; /* 40px */
-            font-weight: 700;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            aspect-ratio: 1 / 1;
-            min-height: 150px; /* Ensure button is not too small on mobile */
-        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-[#42BC79] to-transparent h-full min-h-screen">
-
-    <!-- Hero Section based on Figma design -->
-    <div class="w-full relative overflow-hidden">
-        <div class="relative w-full py-16 md:py-24 px-4 md:px-8 bg-[#D9D9D9] shadow-md flex flex-col md:flex-row items-center justify-center space-y-8 md:space-y-0 md:space-x-16">
-            <div class="relative flex flex-col items-center md:items-start text-center md:text-left z-10">
-                <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold text-black text-source-serif drop-shadow-md">Economics-Entrance</h1>
-                <p class="mt-2 text-base md:text-lg text-black text-source-serif">Your one-stop platform for cracking top economics entrance exams.</p>
-            </div>
-            <!-- Updated image source to point to the local asset -->
-            <img class="w-48 md:w-64 lg:w-96 rounded-3xl opacity-80 z-10" src="assets/Gemini_Generated_Image_ad5j5had5j5had5j-removebg-preview 1.svg" alt="Illustration of a person studying on a laptop.">
-        </div>
-    </div>
+<body class="bg-gray-100 text-gray-800">
 
     <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">M.A. Economics Entrance Exam Practice</h1>
+            <p class="text-gray-600 mt-2">Your one-stop platform for cracking top economics entrance exams.</p>
+        </header>
+
         <!-- Tabs -->
-        <div class="mt-8 mb-8">
-            <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
-                <button class="w-full md:w-auto py-4 px-12 rounded-full font-semibold text-lg text-black text-source-serif shadow-md transition-all duration-300 tab-active" onclick="changeTab('cuet')">CUET-PG</button>
-                <button class="w-full md:w-auto py-4 px-12 rounded-full font-bold text-lg text-source-serif transition-all duration-300 tab-inactive" onclick="changeTab('iit')">IIT-JAM</button>
-                <button class="w-full md:w-auto py-4 px-12 rounded-full font-bold text-lg text-source-serif transition-all duration-300 tab-inactive" onclick="changeTab('isi')">ISI-MSQE</button>
+        <div class="mb-8">
+            <div class="flex border-b border-gray-300 justify-center">
+                <button class="py-2 px-4 text-lg font-medium text-gray-500 hover:text-indigo-600 focus:outline-none tab-active" onclick="changeTab('cuet')">CUET-PG (Economics)</button>
+                <button class="py-2 px-4 text-lg font-medium text-gray-500 hover:text-indigo-600 focus:outline-none" onclick="changeTab('iit')">IIT-JAM (Economics)</button>
+                <button class="py-2 px-4 text-lg font-medium text-gray-500 hover:text-indigo-600 focus:outline-none" onclick="changeTab('isi')">ISI-MSQE</button>
             </div>
         </div>
 
         <!-- Content Area -->
         <div id="cuet-content">
-            <div id="dashboard" class="mt-12">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div id="dashboard">
+                <h2 class="text-2xl font-semibold mb-6 text-center">CUET-PG (Economics) Dashboard</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <!-- Topic Cards -->
-                    <div class="card p-6 rounded-lg shadow-md text-center cursor-pointer flex flex-col justify-center items-center bg-cover bg-center" style="background-image: url('assets/Rectangle 3.svg')" onclick="showQuestionModal('Micro Economics')"><h3 class="font-semibold text-2xl text-spline-sans">Micro Economics</h3></div>
-                    <div class="card p-6 rounded-lg shadow-md text-center cursor-pointer flex flex-col justify-center items-center bg-cover bg-center" style="background-image: url('assets/Rectangle 3.svg')" onclick="showQuestionModal('Macro Economics')"><h3 class="font-semibold text-2xl text-spline-sans">Macro Economics</h3></div>
-                    <div class="card p-6 rounded-lg shadow-md text-center cursor-pointer flex flex-col justify-center items-center bg-cover bg-center" style="background-image: url('assets/Rectangle 3.svg')" onclick="showQuestionModal('Money and Inflation')"><h3 class="font-semibold text-2xl text-spline-sans">Money and Inflation</h3></div>
-                    <div class="card p-6 rounded-lg shadow-md text-center cursor-pointer flex flex-col justify-center items-center bg-cover bg-center" style="background-image: url('assets/Rectangle 4.svg')" onclick="showQuestionModal('Consumption and Investment Function')"><h3 class="font-semibold text-2xl text-spline-sans">Consumption & Investment</h3></div>
-                    <div class="card p-6 rounded-lg shadow-md text-center cursor-pointer flex flex-col justify-center items-center bg-cover bg-center" style="background-image: url('assets/Rectangle 4.svg')" onclick="showQuestionModal('Statistical Methods in Economics')"><h3 class="font-semibold text-2xl text-spline-sans">Statistical Methods</h3></div>
-                    <div class="card p-6 rounded-lg shadow-md text-center cursor-pointer flex flex-col justify-center items-center bg-cover bg-center" style="background-image: url('assets/Rectangle 4.svg')" onclick="showQuestionModal('Mathematical Methods in Economics')"><h3 class="font-semibold text-2xl text-spline-sans">Mathematical Methods</h3></div>
-                    <div class="card p-6 rounded-lg shadow-md text-center cursor-pointer flex flex-col justify-center items-center bg-cover bg-center" style="background-image: url('assets/Rectangle 4.svg')" onclick="showQuestionModal('Indian Economy')"><h3 class="font-semibold text-2xl text-spline-sans">Indian Economy</h3></div>
-                    <button class="mock-test-button col-span-1 sm:col-span-2 lg:col-span-1" onclick="startMockTest()">
-                        <img class="absolute inset-0 w-full h-full object-cover rounded-full" src="assets/Ellipse 1.svg" alt="Mock Test background" />
-                        <span class="relative z-10 text-spline-sans">MOCK</span>
-                        <span class="relative z-10 text-spline-sans">TEST</span>
-                    </button>
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer" onclick="showQuestionModal('Micro Economics')"><h3 class="font-semibold text-xl">Micro Economics</h3></div>
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer" onclick="showQuestionModal('Macro Economics')"><h3 class="font-semibold text-xl">Macro Economics</h3></div>
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer" onclick="showQuestionModal('Money and Inflation')"><h3 class="font-semibold text-xl">Money and Inflation</h3></div>
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer" onclick="showQuestionModal('Consumption and Investment Function')"><h3 class="font-semibold text-xl">Consumption & Investment</h3></div>
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer" onclick="showQuestionModal('Statistical Methods in Economics')"><h3 class="font-semibold text-xl">Statistical Methods</h3></div>
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer" onclick="showQuestionModal('Mathematical Methods in Economics')"><h3 class="font-semibold text-xl">Mathematical Methods</h3></div>
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer" onclick="showQuestionModal('Indian Economy')"><h3 class="font-semibold text-xl">Indian Economy</h3></div>
+                    <div class="card bg-indigo-600 text-white p-6 rounded-lg shadow-md text-center cursor-pointer col-span-1 md:col-span-2 lg:col-span-4" onclick="startMockTest()"><h3 class="font-semibold text-2xl">MOCK TEST</h3></div>
                 </div>
             </div>
 
@@ -165,18 +127,12 @@
 
         // --- Tab Navigation ---
         function changeTab(tabName) {
-            document.querySelectorAll('button').forEach(tab => {
-                if (tab.getAttribute('onclick') && tab.getAttribute('onclick').includes('changeTab')) {
-                    tab.classList.remove('tab-active');
-                    tab.classList.remove('tab-inactive');
-                    if (tab.getAttribute('onclick').includes(`changeTab('${tabName}')`)) {
-                        tab.classList.add('tab-active');
-                    } else {
-                        tab.classList.add('tab-inactive');
-                    }
-                }
-            });
+            document.querySelectorAll('.flex.border-b button').forEach(tab => tab.classList.remove('tab-active'));
             ['cuet-content', 'iit-content', 'isi-content'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            
+            const activeTab = document.querySelector(`button[onclick="changeTab('${tabName}')"]`);
+            if(activeTab) activeTab.classList.add('tab-active');
+            
             const activeContent = document.getElementById(`${tabName}-content`);
             if(activeContent) activeContent.classList.remove('hidden');
         }
