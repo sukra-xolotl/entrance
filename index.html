@@ -245,19 +245,20 @@
             try {
                 let apiResponseText = await callGeminiAPI(prompt);
 
-                // --- Robust JSON Extraction ---
+                // 1. Isolate the JSON string from the response.
                 const startIndex = apiResponseText.indexOf('[');
                 const endIndex = apiResponseText.lastIndexOf(']');
-
                 if (startIndex === -1 || endIndex === -1) {
                     throw new Error("Could not find a valid JSON array in the API response.");
                 }
-
                 const jsonText = apiResponseText.substring(startIndex, endIndex + 1);
-                
-                // The API might return JSON with unescaped backslashes in LaTeX expressions (e.g., "\frac").
-                // This is invalid JSON. We need to escape these backslashes before parsing.
-                const sanitizedJsonText = jsonText.replace(/\\/g, '\\\\');
+
+                // 2. Clean up common JSON syntax errors.
+                const sanitizedJsonText = jsonText
+                    .replace(/\\/g, '\\\\')          // Escape backslashes for LaTeX
+                    .replace(/\/\/.*$/gm, '')        // Remove JS-style comments
+                    .replace(/,\s*}/g, '}')          // Remove trailing commas in objects
+                    .replace(/,\s*]/g, ']');         // Remove trailing commas in arrays
 
                 currentQuestions = JSON.parse(sanitizedJsonText);
                 
