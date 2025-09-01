@@ -8,8 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- KaTeX for LaTeX rendering -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" xintegrity="sha384-n8MVd4RsNIU0KOVEMckDpbDM7voUVD3yTMgLTrCKwVfP8UJzXfITzBOe7FaiDE6u" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" xintegrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -193,7 +193,6 @@
             fetchQuestions("All Topics", 75, true);
         }
         
-            // API KEY CALLING 
         async function callGeminiAPI(prompt) {
             
             const functionUrl = '/.netlify/functions/call-gemini';
@@ -234,7 +233,34 @@
                 throw error; // Still throw error for console logging
             }
         }
+        
+        // This is a new function dedicated to calling the explanation API endpoint
+        async function callExplanationAPI(prompt) {
+             const functionUrl = '/.netlify/functions/call-gemini-explanation';
 
+            try {
+                const response = await fetch(functionUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: prompt })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Explanation API failed: ${errorData.error}`);
+                }
+
+                const data = await response.json();
+                if (!data.candidates || !data.candidates[0].content.parts[0]) {
+                    throw new Error("Invalid API response structure from explanation server function");
+                }
+                return data.candidates[0].content.parts[0].text;
+
+            } catch (error) {
+                console.error("Explanation API call failed:", error);
+                throw error;
+            }
+        }
 
         async function fetchQuestions(topic, numQuestions, isMock = false) {
             const questionContainer = document.getElementById('question-container');
@@ -419,7 +445,8 @@
             const prompt = `For the question "${question}", explain the core economic concept being tested in simple, clear terms (max 100 words). Use LaTeX for any mathematical notation.`;
             
             try {
-                const explanationText = await callGeminiAPI(prompt);
+                // Call the new dedicated API for explanations
+                const explanationText = await callExplanationAPI(prompt);
                 explanationDiv.innerHTML = explanationText;
                 renderLatex(explanationDiv);
             } catch (error) {
@@ -436,7 +463,8 @@
             const prompt = `For the question "${question}", provide a more detailed explanation (around 200 words). Discuss the context, any relevant formulas, and how this concept connects to other related topics in economics. Use LaTeX for any mathematical notation.`;
             
             try {
-                const explanationText = await callGeminiAPI(prompt);
+                // Call the new dedicated API for explanations
+                const explanationText = await callExplanationAPI(prompt);
                 explanationDiv.innerHTML = explanationText;
                 renderLatex(explanationDiv);
             } catch (error) {
@@ -458,7 +486,8 @@
             Provide a brief, encouraging performance analysis. Identify their top 2-3 weak areas from the incorrect list. For each weak area, suggest a specific, actionable study tip or a key concept to review. Format the output using simple HTML for paragraphs and lists.`;
 
             try {
-                const analysisHtml = await callGeminiAPI(prompt);
+                // Use the new API for this as well since it's a "helpful" feature
+                const analysisHtml = await callExplanationAPI(prompt);
                 analysisDiv.innerHTML = `<div class="explanation">${analysisHtml}</div>`;
             } catch (error) {
                 analysisDiv.innerHTML = `<p class="text-red-500">Sorry, I could not generate a performance analysis at this time.</p>`;
