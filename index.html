@@ -290,7 +290,8 @@
                     const jsonText = apiResponseText.substring(startIndex, endIndex + 1);
 
                     const sanitizedJsonText = jsonText
-                        .replace(/\\/g, '\\\\')
+                        .replace(/\\k/g, 'k') // Fix for KaTeX error
+                        .replace(/\\S/g, 'S') // Fix for KaTeX error
                         .replace(/\/\/.*$/gm, '')
                         .replace(/,\s*}/g, '}')
                         .replace(/,\s*]/g, ']');
