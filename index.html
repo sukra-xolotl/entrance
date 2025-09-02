@@ -261,6 +261,26 @@
                 throw error;
             }
         }
+        
+        function safeJSONParse(text) {
+          try {
+            return JSON.parse(text);
+          } catch (e) {
+            console.error("Raw JSON parse failed, trying cleanup...", e);
+            // Common fixes
+            let cleaned = text
+                .replace(/,\s*}/g, '}') // remove trailing commas in objects
+                .replace(/,\s*]/g, ']') // remove trailing commas in arrays
+                .replace(/\\n/g, '') // remove newlines
+                .replace(/\\/g, '\\\\'); // fix double-escaped quotes
+            try {
+              return JSON.parse(cleaned);
+            } catch (e2) {
+              console.error("Still failed to parse JSON", e2, "\nProblematic text:", text);
+              return null;
+            }
+          }
+        }
 
         async function fetchQuestions(topic, numQuestions, isMock = false) {
             const questionContainer = document.getElementById('question-container');
@@ -289,14 +309,11 @@
                     }
                     const jsonText = apiResponseText.substring(startIndex, endIndex + 1);
 
-                    const sanitizedJsonText = jsonText
-                        .replace(/\\k/g, 'k') // Fix for KaTeX error
-                        .replace(/\\S/g, 'S') // Fix for KaTeX error
-                        .replace(/\/\/.*$/gm, '')
-                        .replace(/,\s*}/g, '}')
-                        .replace(/,\s*]/g, ']');
+                    const newQuestions = safeJSONParse(jsonText);
+                    if (!newQuestions) {
+                      continue; // Skip this batch if parsing failed
+                    }
 
-                    const newQuestions = JSON.parse(sanitizedJsonText);
                     allQuestions = allQuestions.concat(newQuestions);
                     questionsGenerated += newQuestions.length;
 
