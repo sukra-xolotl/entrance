@@ -2,8 +2,10 @@
 
 // Using an ES module for async/await syntax
 export async function handler(event) {
+  console.log("Function triggered.");
   // 1. Check for the correct request method
   if (event.httpMethod !== 'POST') {
+    console.log("Invalid HTTP method.");
     return {
       statusCode: 405, // Method Not Allowed
       body: JSON.stringify({ error: 'Only POST requests are allowed.' }),
@@ -13,8 +15,10 @@ export async function handler(event) {
   // 2. Securely get the API key from Netlify's environment variables
   // NOTE: This now uses a different environment variable.
   const apiKey = process.env.GEMINI_EXPLANATION_API_KEY;
+  console.log("API Key loaded: ", apiKey ? "Yes" : "No");
 
   if (!apiKey) {
+    console.error("API key is missing.");
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'API key for explanations is not set on the server.' }),
@@ -26,10 +30,12 @@ export async function handler(event) {
   try {
     const body = JSON.parse(event.body);
     prompt = body.prompt;
+    console.log("Prompt received: ", prompt ? "Yes" : "No");
     if (!prompt) {
       throw new Error('Prompt is missing from the request body.');
     }
   } catch (error) {
+    console.error(`Invalid request body: ${error.message}`);
     return {
       statusCode: 400, // Bad Request
       body: JSON.stringify({ error: `Invalid request body: ${error.message}` }),
@@ -47,6 +53,7 @@ export async function handler(event) {
 
   // 5. Make the API call from the serverless function
   try {
+    console.log("Making API call to Google.");
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -63,6 +70,7 @@ export async function handler(event) {
     }
 
     const data = await response.json();
+    console.log("Received data from Google.");
     
     // 6. Send the successful response back to your frontend
     return {
