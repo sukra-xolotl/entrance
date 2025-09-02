@@ -448,7 +448,9 @@
                 // Call the new dedicated API for explanations
                 const explanationText = await callExplanationAPI(prompt);
                 explanationDiv.innerHTML = explanationText;
-                renderLatex(explanationDiv);
+                if (explanationText && explanationText.includes('$')) {
+                    renderLatex(explanationDiv);
+                }
             } catch (error) {
                 explanationDiv.innerText = 'Sorry, I could not fetch an explanation at this time.';
                 console.error("Explanation Error:", error);
@@ -466,7 +468,9 @@
                 // Call the new dedicated API for explanations
                 const explanationText = await callExplanationAPI(prompt);
                 explanationDiv.innerHTML = explanationText;
-                renderLatex(explanationDiv);
+                if (explanationText && explanationText.includes('$')) {
+                    renderLatex(explanationDiv);
+                }
             } catch (error) {
                 explanationDiv.innerText = 'Sorry, I could not fetch a deeper explanation at this time.';
                 console.error("Deeper Understanding Error:", error);
@@ -489,6 +493,9 @@
                 // Use the new API for this as well since it's a "helpful" feature
                 const analysisHtml = await callExplanationAPI(prompt);
                 analysisDiv.innerHTML = `<div class="explanation">${analysisHtml}</div>`;
+                if (analysisHtml && analysisHtml.includes('$')) {
+                    renderLatex(analysisDiv.firstElementChild);
+                }
             } catch (error) {
                 analysisDiv.innerHTML = `<p class="text-red-500">Sorry, I could not generate a performance analysis at this time.</p>`;
                 console.error("Analysis Error:", error);
