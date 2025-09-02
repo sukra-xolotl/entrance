@@ -269,10 +269,12 @@
             console.error("Raw JSON parse failed, trying cleanup...", e);
             // Common fixes
             let cleaned = text
-                .replace(/,\s*}/g, '}') // remove trailing commas in objects
-                .replace(/,\s*]/g, ']') // remove trailing commas in arrays
+                .replace(/\\k/g, 'k') // Fix for KaTeX error
+                .replace(/\\S/g, 'S') // Fix for KaTeX error
                 .replace(/\\n/g, '') // remove newlines
-                .replace(/\\/g, '\\\\'); // fix double-escaped quotes
+                .replace(/\/\/.*$/gm, '') // remove comments
+                .replace(/,\s*}/g, '}') // remove trailing commas in objects
+                .replace(/,\s*]/g, ']'); // remove trailing commas in arrays
             try {
               return JSON.parse(cleaned);
             } catch (e2) {
